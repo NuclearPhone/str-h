@@ -37,8 +37,6 @@ STR_EXPORT char str_pop(str_t*);
 #define DEFAULT_STR_GROWTH_FACTOR 1.5f
 #endif
 
-#define STR_IMPLEMENTATION
-
 #ifdef STR_IMPLEMENTATION
 
 #define STR_UNUSED(x) (void)x
