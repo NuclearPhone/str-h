@@ -17,6 +17,9 @@ typedef struct {
   uint32_t len;
 } str_t;
 
+#define STR_STATIC_DEFN(str)                                                   \
+  (str_t) { .ptr = str, .capacity = sizeof(str) - 1, .len = sizeof(str) - 1 }
+
 STR_EXPORT str_t str_create();
 STR_EXPORT str_t str_from_cstr_move(char **);
 STR_EXPORT str_t str_from_cstr_clone(const char *);

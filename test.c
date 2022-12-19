@@ -55,25 +55,41 @@ static const char *move_test() {
   return NULL;
 }
 
-const test_t tests[] = {
-    (test_t){
-        .ptr = strcmp_test,
-        .name = "strcmp",
-        .desc = "",
-    },
+static const char *static_test() {
+  const str_t str = STR_STATIC_DEFN("hello");
+  str_t str_2 = str_from_cstr_clone("hello");
 
-    (test_t){
-        .ptr = appending_test,
-        .name = "appending",
-        .desc = "",
-    },
+  if (!str_cmp(&str, &str_2)) {
+    return TESTC_BASIC_ERR;
+  }
 
-    (test_t){
-        .ptr = move_test,
-        .name = "moving cstrs",
-        .desc = "",
-    },
-};
+  str_destroy(&str_2);
+  return NULL;
+}
+
+const test_t tests[] = {(test_t){
+                            .ptr = strcmp_test,
+                            .name = "strcmp",
+                            .desc = "",
+                        },
+
+                        (test_t){
+                            .ptr = appending_test,
+                            .name = "appending",
+                            .desc = "",
+                        },
+
+                        (test_t){
+                            .ptr = move_test,
+                            .name = "moving cstrs",
+                            .desc = "",
+                        },
+
+                        (test_t){
+                            .ptr = static_test,
+                            .name = "static test",
+                            .desc = "",
+                        }};
 
 extern int main() {
   bool passed = true;
