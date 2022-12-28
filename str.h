@@ -29,11 +29,11 @@ STR_EXPORT const char* str_cstr(const str_t*);
 STR_EXPORT void str_destroy(str_t*);
 STR_EXPORT bool str_cmp(const str_t*, const str_t*);
 STR_EXPORT bool str_cmp_cstr(const str_t*, const char*);
-STR_EXPORT void str_append_char(str_t*, char);
+STR_EXPORT void str_append_char(str_t*, const char);
 STR_EXPORT void str_append_cstr(str_t*, const char*);
-STR_EXPORT void str_append(str_t*, str_t* from);
-STR_EXPORT void str_insert_char(str_t*, char, uint32_t idx);
-STR_EXPORT void str_insert(str_t*, str_t* from, uint32_t idx);
+STR_EXPORT void str_append(str_t*, const str_t* from);
+STR_EXPORT void str_insert_char(str_t*, const char, const uint32_t idx);
+STR_EXPORT void str_insert(str_t*, const str_t* from, const uint32_t idx);
 STR_EXPORT char str_pop(str_t*);
 
 #ifndef DEFAULT_STR_CAPACITY
@@ -161,7 +161,7 @@ STR_EXPORT void str_append_cstr(str_t* str, const char* from) {
     str->len += from_len;
 }
 
-STR_EXPORT void str_append(str_t* str, str_t* from) {
+STR_EXPORT void str_append(str_t* str, const str_t* from) {
     const uint32_t final_len = str->len + from->len;
 
     str_fit(str, final_len);
@@ -172,7 +172,7 @@ STR_EXPORT void str_append(str_t* str, str_t* from) {
     str->len += from->len;
 }
 
-STR_EXPORT void str_insert_char(str_t* str, char c, uint32_t idx) {
+S`TR_EXPORT void str_insert_char(str_t* str, const char c, const uint32_t idx) {
     str_fit(str, str->len += 1);
 
     for (uint32_t i = str->len; i > idx; i--)
@@ -181,7 +181,7 @@ STR_EXPORT void str_insert_char(str_t* str, char c, uint32_t idx) {
     str->ptr[idx] = c;
 }
 
-STR_EXPORT void str_insert(str_t* str, str_t* from, uint32_t idx) {
+STR_EXPORT void str_insert(str_t* str, const str_t* from, const uint32_t idx) {
     const uint32_t final_len = str->len + from->len;
 
     str_fit(str, final_len);
