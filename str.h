@@ -25,6 +25,8 @@ typedef struct {
 STR_EXPORT str_t str_create();
 STR_EXPORT str_t str_from_cstr_move(char**);
 STR_EXPORT str_t str_from_cstr_clone(const char*);
+// end must be one after whatever you want to copy
+STR_EXPORT str_t str_from_range(const char* begin, const char* end);
 STR_EXPORT const char* str_cstr(const str_t*);
 STR_EXPORT void str_destroy(str_t*);
 STR_EXPORT bool str_cmp(const str_t*, const str_t*);
@@ -53,6 +55,11 @@ static inline uint32_t str_cstrlen(const char* in) {
     while (in[len] != 0)
         len += 1;
     return len;
+}
+
+static inline void str_memcpy(char* to, char* from, uint32_t len) {
+    for (uint32_t idx = 0; idx < len; idx++)
+        to[idx] = from[idx];
 }
 
 // continuously resizes a strings capacity until it is >= than fit_cap
@@ -115,6 +122,17 @@ STR_EXPORT str_t str_from_cstr_move(char** in) {
     return out;
 }
 
+STR_EXPORT str_t str_from_range(const char* begin, const char* end) {
+    const uint32_t len = end - begin;
+    char* copy = malloc(len);
+    str_memcpy(copy, begin, len);
+    return (str_t){
+        .ptr = copy,
+        .capacity = len,
+        .len = len,
+    };
+}
+
 STR_EXPORT void str_destroy(str_t* str) {
     if (str->ptr)
         free(str->ptr);
@@ -172,7 +190,7 @@ STR_EXPORT void str_append(str_t* str, const str_t* from) {
     str->len += from->len;
 }
 
-S`TR_EXPORT void str_insert_char(str_t* str, const char c, const uint32_t idx) {
+STR_EXPORT void str_insert_char(str_t* str, const char c, const uint32_t idx) {
     str_fit(str, str->len += 1);
 
     for (uint32_t i = str->len; i > idx; i--)

@@ -85,6 +85,19 @@ static const char* append_cstr() {
     return NULL;
 }
 
+static const char* from_range() {
+    char* data = "hello, world!";
+
+    str_t str = str_from_range(&data[7], &data[12]);
+
+    if (!str_cmp_cstr(&str, "world"))
+        return TESTC_BASIC_ERR;
+
+    str_destroy(&str);
+
+    return NULL;
+}
+
 const test_t tests[] = {
     (test_t){
         .ptr = strcmp_test,
@@ -113,6 +126,12 @@ const test_t tests[] = {
     (test_t){
         .ptr = append_cstr,
         .name = "append cstr",
+        .desc = "",
+    },
+
+    (test_t){
+        .ptr = from_range,
+        .name = "from range",
         .desc = "",
     },
 };
