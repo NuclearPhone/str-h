@@ -98,6 +98,15 @@ static const char* from_range() {
     return NULL;
 }
 
+static const char* cloning() {
+    const str_t from = STR_STATIC_DEFN("hello");
+    str_t clone = str_clone(&from);
+    if (!str_cmp(&clone, &from))
+        return TESTC_BASIC_ERR;
+    str_destroy(&clone);
+    return NULL;
+}
+
 const test_t tests[] = {
     (test_t){
         .ptr = strcmp_test,
@@ -132,6 +141,12 @@ const test_t tests[] = {
     (test_t){
         .ptr = from_range,
         .name = "from range",
+        .desc = "",
+    },
+
+    (test_t){
+        .ptr = cloning,
+        .name = "cloning",
         .desc = "",
     },
 };

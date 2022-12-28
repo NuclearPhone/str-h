@@ -23,6 +23,7 @@ typedef struct {
     }
 
 STR_EXPORT str_t str_create();
+STR_EXPORT str_t str_clone(const str_t* from);
 STR_EXPORT str_t str_from_cstr_move(char**);
 STR_EXPORT str_t str_from_cstr_clone(const char*);
 // end must be one after whatever you want to copy
@@ -57,7 +58,7 @@ static inline uint32_t str_cstrlen(const char* in) {
     return len;
 }
 
-static inline void str_memcpy(char* to, char* from, uint32_t len) {
+static inline void str_memcpy(char* to, const char* from, uint32_t len) {
     for (uint32_t idx = 0; idx < len; idx++)
         to[idx] = from[idx];
 }
@@ -82,6 +83,17 @@ STR_EXPORT str_t str_create() {
     };
 
     return out;
+}
+
+STR_EXPORT str_t str_clone(const str_t* in) {
+    char* copy = malloc(in->len + 1);
+    copy[in->len] = 0;
+    str_memcpy(copy, in->ptr, in->len);
+    return (str_t){
+        .len = in->len,
+        .capacity = in->len,
+        .ptr = copy,
+    };
 }
 
 STR_EXPORT const char* str_cstr(const str_t* in) {
