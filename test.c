@@ -107,6 +107,13 @@ static const char* cloning() {
     return NULL;
 }
 
+static const char* generate_test() {
+    str_t into = str_generate("%s", "hi");
+    if (!str_cmp_cstr(&into, "hi"))
+        return TESTC_BASIC_ERR;
+    return NULL;
+}
+
 const test_t tests[] = {
     (test_t){
         .ptr = strcmp_test,
@@ -147,6 +154,12 @@ const test_t tests[] = {
     (test_t){
         .ptr = cloning,
         .name = "cloning",
+        .desc = "",
+    },
+
+    (test_t){
+        .ptr = generate_test,
+        .name = "generate",
         .desc = "",
     },
 };

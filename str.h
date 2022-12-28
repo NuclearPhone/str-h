@@ -1,7 +1,9 @@
 #pragma once
 
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #ifdef STR_INLINE
@@ -23,6 +25,7 @@ typedef struct {
     }
 
 STR_EXPORT str_t str_create();
+STR_EXPORT str_t str_generate(const char* format, ...);
 STR_EXPORT str_t str_clone(const str_t* from);
 STR_EXPORT str_t str_from_cstr_move(char**);
 STR_EXPORT str_t str_from_cstr_clone(const char*);
@@ -83,6 +86,26 @@ STR_EXPORT str_t str_create() {
     };
 
     return out;
+}
+
+STR_EXPORT str_t str_generate(const char* fmt, ...) {
+    va_list list, copy;
+    va_start(list, fmt);
+    va_copy(copy, list);
+
+    uint32_t len = vsnprintf(NULL, 0, fmt, list);
+    char* ptr = malloc(len + 1);
+    ptr[len] = 0;
+    vsnprintf(ptr, len + 1, fmt, copy);
+
+    va_end(list);
+    va_end(copy);
+
+    return (str_t){
+        .ptr = ptr,
+        .len = len,
+        .capacity = len,
+    };
 }
 
 STR_EXPORT str_t str_clone(const str_t* in) {

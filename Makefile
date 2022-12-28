@@ -1,3 +1,3 @@
-test: test.c
-	clang test.c -o test -g
+test: test.c str.h
+	clang -g test.c -o test
 	./test
