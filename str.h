@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -41,6 +42,9 @@ STR_EXPORT void str_append(str_t*, const str_t* from);
 STR_EXPORT void str_insert_char(str_t*, const char, const uint32_t idx);
 STR_EXPORT void str_insert(str_t*, const str_t* from, const uint32_t idx);
 STR_EXPORT char str_pop(str_t*);
+
+// returns -1 for error
+STR_EXPORT int64_t str_ip_to_long(const str_t*);
 
 #ifndef DEFAULT_STR_CAPACITY
 #define DEFAULT_STR_CAPACITY 32
@@ -248,6 +252,39 @@ STR_EXPORT void str_insert(str_t* str, const str_t* from, const uint32_t idx) {
         str->ptr[i] = from->ptr[i];
 
     str->len = final_len;
+}
+
+STR_EXPORT int64_t str_ip_to_long(const str_t* str) {
+    const char* ptr = str->ptr;
+
+    uint32_t final = 0;
+
+    uint32_t idx = 0;
+    uint32_t point_idx = 0;
+
+    for (;;) {
+        uint8_t current = 0;
+        while (isdigit(ptr[idx])) {
+            uint8_t digit_val = ptr[idx] - '0';
+            current *= 10;
+            current += digit_val;
+
+            idx += 1;
+        }
+
+        final |= current << (24 - point_idx * 8);
+
+        point_idx += 1;
+        if (point_idx == 4)
+            break;
+
+        if (ptr[idx] != '.')
+            return -1;
+
+        idx += 1;
+    }
+
+    return final;
 }
 
 #endif

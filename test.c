@@ -114,6 +114,24 @@ static const char* generate_test() {
     return NULL;
 }
 
+static const char* ip_test() {
+    str_t str = STR_STATIC_DEFN("0.0.0.0");
+    int64_t ip = str_ip_to_long(&str);
+    if (ip == -1)
+        return TESTC_BASIC_ERR;
+    if (ip != 0)
+        return TESTC_BASIC_ERR;
+
+    str = STR_STATIC_DEFN("127.0.0.1");
+    ip = str_ip_to_long(&str);
+    if (ip == -1)
+        return TESTC_BASIC_ERR;
+    if (ip != 2130706433)
+        return TESTC_BASIC_ERR;
+
+    return NULL;
+}
+
 const test_t tests[] = {
     (test_t){
         .ptr = strcmp_test,
@@ -160,6 +178,12 @@ const test_t tests[] = {
     (test_t){
         .ptr = generate_test,
         .name = "generate",
+        .desc = "",
+    },
+
+    (test_t){
+        .ptr = ip_test,
+        .name = "ip test",
         .desc = "",
     },
 };
