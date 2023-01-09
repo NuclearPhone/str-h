@@ -116,17 +116,28 @@ static const char* generate_test() {
 
 static const char* ip_test() {
     str_t str = STR_STATIC_DEFN("0.0.0.0");
-    int64_t ip = str_ip_to_long(&str);
-    if (ip == -1)
+    uint32_t ip;
+    if (str_ip_to_long(&str, &ip) == -1)
         return TESTC_BASIC_ERR;
     if (ip != 0)
         return TESTC_BASIC_ERR;
 
     str = STR_STATIC_DEFN("127.0.0.1");
-    ip = str_ip_to_long(&str);
-    if (ip == -1)
+    if (str_ip_to_long(&str, &ip) == -1)
         return TESTC_BASIC_ERR;
     if (ip != 2130706433)
+        return TESTC_BASIC_ERR;
+
+    return NULL;
+}
+
+static const char* integer_parsing() {
+    str_t str = STR_STATIC_DEFN("-1337");
+    int64_t out;
+
+    if (str_parse_integer(&str, &out) == -1)
+        return TESTC_BASIC_ERR;
+    if (out != -1337)
         return TESTC_BASIC_ERR;
 
     return NULL;
@@ -184,6 +195,12 @@ const test_t tests[] = {
     (test_t){
         .ptr = ip_test,
         .name = "ip test",
+        .desc = "",
+    },
+
+    (test_t){
+        .ptr = integer_parsing,
+        .name = "integer parsing",
         .desc = "",
     },
 };

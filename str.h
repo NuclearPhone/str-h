@@ -20,6 +20,11 @@ typedef struct {
     uint32_t len;
 } str_t;
 
+#define STR_OPTIONAL(val) \
+    struct {              \
+        val v;            \
+    }
+
 #define STR_STATIC_DEFN(str)                                            \
     (str_t) {                                                           \
         .ptr = str, .capacity = sizeof(str) - 1, .len = sizeof(str) - 1 \
@@ -44,7 +49,10 @@ STR_EXPORT void str_insert(str_t*, const str_t* from, const uint32_t idx);
 STR_EXPORT char str_pop(str_t*);
 
 // returns -1 for error
-STR_EXPORT int64_t str_ip_to_long(const str_t*);
+STR_EXPORT int str_ip_to_long(const str_t*, uint32_t* out);
+
+// returns -1 for error
+STR_EXPORT int str_parse_integer(const str_t*, int64_t* out);
 
 #ifndef DEFAULT_STR_CAPACITY
 #define DEFAULT_STR_CAPACITY 32
@@ -254,7 +262,7 @@ STR_EXPORT void str_insert(str_t* str, const str_t* from, const uint32_t idx) {
     str->len = final_len;
 }
 
-STR_EXPORT int64_t str_ip_to_long(const str_t* str) {
+STR_EXPORT int str_ip_to_long(const str_t* str, uint32_t* out) {
     const char* ptr = str->ptr;
 
     uint32_t final = 0;
@@ -284,7 +292,30 @@ STR_EXPORT int64_t str_ip_to_long(const str_t* str) {
         idx += 1;
     }
 
-    return final;
+    *out = final;
+
+    return 0;
+}
+
+STR_EXPORT int str_parse_integer(const str_t* str, int64_t* out) {
+    const char* ptr = str->ptr;
+
+    bool neg = ptr[0] == '-';
+    int64_t acc = 0;
+    uint32_t idx = 0;
+    if (neg)
+        idx++;
+
+    while (idx < str->len) {
+        char c = ptr[idx++];
+        if (!isdigit(c))
+            return -1;
+        acc *= 10;
+        acc += c - '0';
+    }
+
+    *out = acc * (neg ? -1 : 1);
+    return 0;
 }
 
 #endif
