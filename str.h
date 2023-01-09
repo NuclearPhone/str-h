@@ -181,7 +181,7 @@ STR_EXPORT str_t str_from_range(const char *begin, const char *end) {
 STR_EXPORT void str_destroy(str_t *str) {
     if (str->ptr) {
         free(str->ptr);
-        str = NULL;
+        str->ptr = NULL;
     }
 }
 
