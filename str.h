@@ -20,11 +20,6 @@ typedef struct {
     uint32_t len;
 } str_t;
 
-#define STR_OPTIONAL(val)                                                      \
-    struct {                                                                   \
-        val v;                                                                 \
-    }
-
 #define STR_STATIC_DEFN(str)                                                   \
     (str_t) { .ptr = str, .capacity = sizeof(str) - 1, .len = sizeof(str) - 1 }
 
